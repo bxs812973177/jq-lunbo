@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body,
+        div,
+        ul,
+        li {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #con {
+            width: 475px;
+            height: 350px;
+            position: relative;
+            margin: 100px auto;
+            overflow: hidden;
+        }
+        
+        li {
+            float: left;
+            list-style: none;
+            text-align: center;
+        }
+        
+        #box li img {
+            width: 475px;
+            height: 350px;
+        }
+        
+        #nav {
+            width: 50%;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%);
+            /*平移*/
+            display: flex;
+            border-radius: 20px;
+        }
+        
+        #nav li {
+            flex: 1;
+            /*每人占父元素的一份*/
+            font-size: 20px;
+            cursor: pointer;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="con">
+        <ul id="box">
+            <li><img src="img/1.jpg" /></li>
+            <li><img src="img/2.jpg" /></li>
+            <li><img src="img/3.jpg" /></li>
+            <li><img src="img/4.jpg" /></li>
+            <li><img src="img/5.jpg" /></li>
+            <li><img src="img/6.jpg" /></li>
+        </ul>
+        <ul id="nav"></ul>
+    </div>
+    <script src="js/jquery-1.11.2.min.js"></script>
+    <script>
+        var index = 0; //代表当前轮播图的下标
+        var dir = "left"; //代表当前轮播方向
+        var timer = setInterval(aa, 2000);
+
+        function aa() {
+            var len = index * -475;
+            $("#box").animate({
+                marginLeft: len
+            }, 1000);
+            //根据下标找到对应的导航点，将其颜色变为红色，其他导航点白色
+            $("#nav li").eq(index).css("color", "red").siblings().css("color", "white");
+
+            if (index == $("#box li").length - 1) { //如果index长度等于li的个数时
+                dir = 'right'; //图片向右滚动
+            } else if (index == 0) { //如果index长度等于0
+                dir = 'left'; //图片向左滚动
+            }
+            if (dir == 'left') {
+                index++;
+            } else {
+                index--;
+            }
+        }
+        //根据图片的个数来动态生成导航点
+        var length = $('#box').children('li').length; //获取li的个数
+        for (var i = 0; i < length; i++) {
+            var li = $('<li>●</li>');
+            li.appendTo('#nav');
+        }
+        //box的宽度设置为图片个数*475
+        $('#box').css("width", $("#box li").length * 475);
+
+        //给nav设置合成事件
+        $('#nav').hover(
+            function() { //当鼠标移入时停止动画
+                clearInterval(timer)
+            },
+            function() { //当鼠标离开时继续
+                timer = setInterval(aa, 2000);
+            })
+
+        //给nav里所有导航点绑定单击事件
+        //当鼠标点击导航点时显示相对应的图片
+        $("#nav li").click(function() {
+            index = $(this).index();
+            aa();
+        })
+    </script>
+</body>
+
+</html>
